@@ -1,0 +1,15 @@
+{
+  "name": "quran-local-electron",
+  "version": "2.1.0",
+  "description": "Offline Quran, Hadith, Tasbih and monthly prayer-times desktop app built with Electron + HTML/CSS/Vanilla JS.",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "check": "node --check main.js && node --check preload.js && node --check renderer/app.js"
+  },
+  "devDependencies": {
+    "electron": "latest"
+  }
+}

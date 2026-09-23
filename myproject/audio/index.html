@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self' file: data:; media-src 'self' file: https://*.mp3quran.net; img-src 'self' data:; connect-src 'self' https://api.aladhan.com;" />
+  <title>مصحف محلي — Quran Offline</title>
+  <link rel="stylesheet" href="renderer/style.css" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <button id="menuBtn" class="icon-btn" title="القائمة">☰</button>
+      <div class="brand">
+        <div class="brand-mark">ﷲ</div>
+        <div><strong data-i18n="ui.brand">مصحف محلي</strong><span data-i18n="ui.brand_sub">Quran Offline</span></div>
+      </div>
+      <div class="top-actions">
+        <button id="searchBtn" class="ghost-btn" data-i18n="ui.search">بحث</button>
+        <button id="lastReadBtn" class="ghost-btn" data-i18n="ui.last_read">آخر قراءة</button>
+        <button id="themeBtn" class="icon-btn" title="الوضع الليلي">◐</button>
+      </div>
+    </header>
+
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-scroll">
+        <section class="nav-section">
+          <button class="nav-item active" data-view="quran"><span>📖</span> <span data-i18n="ui.nav.quran">المصحف</span></button>
+          <button class="nav-item" data-view="prayer"><span>🕌</span> <span data-i18n="ui.nav.prayer">مواقيت الصلاة</span></button>
+          <button class="nav-item" data-view="hadith"><span>📚</span> <span data-i18n="ui.nav.hadith">الحديث</span></button>
+          <button class="nav-item" data-view="tasbih"><span>📿</span> <span data-i18n="ui.nav.tasbih">السبحة</span></button>
+          <button class="nav-item" data-view="tools"><span>🧰</span> <span data-i18n="ui.nav.tools">الأدوات</span></button>
+          <button class="nav-item" data-view="favorites"><span>★</span> <span data-i18n="ui.nav.favorites">المفضلة</span></button>
+          <button class="nav-item" data-view="settings"><span>⚙</span> <span data-i18n="ui.nav.settings">الإعدادات</span></button>
+        </section>
+        <section class="side-card">
+          <div class="side-card-title" data-i18n="ui.saved_position">آخر موضع محفوظ</div>
+          <div id="sidebarLastRead" class="muted">—</div>
+          <button id="continueBtn" class="primary-btn small" data-i18n="ui.continue">متابعة القراءة</button>
+        </section>
+        <section class="side-card">
+          <div class="side-card-title" data-i18n="ui.daily_progress">التقدم اليومي</div>
+          <div class="progress"><i id="dailyProgressBar"></i></div>
+          <div class="progress-caption"><span id="dailyProgressText">0 / 5</span><span id="dailyStreak">0 يوم</span></div>
+        </section>
+      </div>
+      <div class="sidebar-footer">
+        <button class="folder-btn" id="openDataFolder">📁 <span data-i18n="ui.folder_data">مجلد البيانات</span></button>
+        <div class="version">القرآن والبيانات محليًا • التلاوة والمواقيت يمكن تحديثها عبر الإنترنت</div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section id="view-quran" class="view active-view">
+        <div class="page-toolbar">
+          <div><div class="eyebrow" data-i18n="ui.reading">القراءة</div><h1 data-i18n="ui.quran_title">المصحف الشريف</h1></div>
+          <div class="toolbar-actions">
+            <select id="surahSelect" aria-label="اختيار السورة"></select>
+            <input id="verseJump" type="number" min="1" data-i18n-placeholder="ui.verse_number" placeholder="رقم الآية" />
+            <button id="jumpBtn" class="primary-btn" data-i18n="ui.jump">انتقل</button>
+          </div>
+        </div>
+
+        <div id="dataAlert" class="notice hidden"></div>
+        <div class="quran-layout">
+          <article class="quran-card">
+            <div class="surah-header">
+              <div><div id="surahKicker" class="surah-kicker">السورة 1</div><h2 id="surahTitle">الفاتحة</h2><div id="surahMeta" class="muted">—</div></div>
+              <div class="surah-actions"><button id="playSurahBtn" class="circle-btn" title="تشغيل السورة">▶</button><button id="toggleFocusBtn" class="circle-btn" title="وضع التركيز">⛶</button></div>
+            </div>
+            <div id="verses" class="verses"></div>
+            <div class="reader-footer"><button id="prevSurahBtn" class="secondary-btn" data-i18n="ui.prev_surah">السورة السابقة</button><button id="markReadBtn" class="primary-btn" data-i18n="ui.save_reading">حفظ موضع القراءة</button><button id="nextSurahBtn" class="secondary-btn" data-i18n="ui.next_surah">السورة التالية</button></div>
+          </article>
+          <aside class="reader-panel">
+            <div class="panel-card">
+              <div class="panel-title" data-i18n="ui.recitation">التلاوة</div>
+              <label data-i18n="ui.choose_reciter">القارئ</label><select id="reciterSelect"><option value="">اختر قارئًا</option></select>
+              <div class="audio-player"><div class="audio-line"><span id="audioStatus" data-i18n="ui.ready">جاهز</span><span id="audioTime">00:00</span></div><audio id="audio" controls preload="metadata"></audio><div class="mini-row"><button id="audioRepeatBtn" class="tiny-btn">تكرار: 1×</button><button id="audioNextBtn" class="tiny-btn" data-i18n="ui.next">التالي</button><select id="audioSpeed"><option value="0.75">0.75</option><option value="1">1</option><option value="1.25">1.25</option><option value="1.5">1.5</option><option value="2">2</option></select></div></div>
+            </div>
+            <div class="panel-card"><div class="panel-title" data-i18n="ui.translation">ترجمة المعاني</div><select id="translationSelect"><option value="ar">العربية (النص الأصلي)</option></select><p class="muted small-text"><code></code></p></div>
+            <div class="panel-card"><div class="panel-title" data-i18n="ui.font_tools">أدوات القراءة</div><div class="tool-grid two"><button class="tool-btn" id="fontDown">A−<span data-i18n="ui.font_down">تصغير الخط</span></button><button class="tool-btn" id="fontUp">A+<span data-i18n="ui.font_up">تكبير الخط</span></button><button class="tool-btn" id="lineDown">↕−<span data-i18n="ui.line_down">تقليل التباعد</span></button><button class="tool-btn" id="lineUp">↕+<span data-i18n="ui.line_up">زيادة التباعد</span></button></div></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="view-prayer" class="view">
+        <div class="page-toolbar"><div><div class="eyebrow">المواقيت</div><h1 data-i18n="ui.prayer_times">مواقيت الصلاة</h1><div id="prayerLocationLabel" class="muted">لم يتم تحديد الموقع بعد</div></div><div class="toolbar-actions"><button id="useLocationBtn" class="primary-btn" data-i18n="ui.use_location">📍 استخدام موقعي</button><button id="refreshPrayerBtn" class="secondary-btn" data-i18n="ui.refresh_month">↻ تحديث الشهر</button></div></div>
+        <div id="prayerSetup" class="prayer-setup panel-card"><h3>تحديد موقع المواقيت</h3><p class="muted">يمكنك السماح للتطبيق باستخدام إحداثيات جهازك، أو إدخال المدينة يدويًا. بعد الحصول على مواقيت الشهر تُحفظ محليًا.</p><div class="prayer-form-grid"><input id="prayerCityInput" type="text" placeholder="المدينة، الدولة — مثال: القاهرة، مصر" autocomplete="off" /><button id="savePrayerCityBtn" class="primary-btn">استخدام المدينة</button></div></div>
+        <div id="prayerNotice" class="notice hidden"></div><div class="prayer-today-grid" id="prayerTodayGrid"></div>
+        <div class="month-card panel-card"><div class="month-head"><div><strong id="prayerMonthTitle">الشهر</strong><div id="prayerUpdatedLabel" class="muted small-text">—</div></div><div class="month-nav"><button id="prayerPrevMonth" class="secondary-btn">‹ السابق</button><button id="prayerNextMonth" class="secondary-btn">التالي ›</button></div></div><div class="table-wrap"><table class="prayer-table"><thead><tr><th>التاريخ</th><th>الهجري</th><th>الفجر</th><th>الشروق</th><th>الظهر</th><th>العصر</th><th>المغرب</th><th>العشاء</th><th>منتصف الليل</th></tr></thead><tbody id="prayerMonthBody"></tbody></table></div></div>
+        <div class="prayer-settings-row"><div class="settings-card"><h3>طريقة الحساب</h3><label for="prayerMethod">الطريقة</label><select id="prayerMethod"></select><label for="prayerSchool">المذهب للعصر</label><select id="prayerSchool"><option value="0">الشافعي / المالكي / الحنبلي</option><option value="1">الحنفي</option></select><button id="savePrayerSettingsBtn" class="primary-btn wide">حفظ وإعادة جلب الشهر</button></div><div class="settings-card"><h3>حالة التخزين</h3><p id="prayerCacheInfo" class="muted small-text">لا توجد بيانات مخزنة.</p><button id="changePrayerLocationBtn" class="secondary-btn wide">تغيير الموقع</button><button id="openPrayerDataBtn" class="secondary-btn wide">فتح مجلد بيانات التطبيق</button></div></div>
+      </section>
+
+      <section id="view-hadith" class="view">
+        <div class="page-toolbar"><div><div class="eyebrow">المكتبة</div><h1 data-i18n="ui.hadith">الأحاديث</h1></div><div class="toolbar-actions"><input id="hadithSearch" type="search" data-i18n-placeholder="ui.hadith_placeholder" placeholder="ابحث في الأحاديث…" /><button id="hadithRandomBtn" class="primary-btn" data-i18n="ui.hadith_random">حديث عشوائي</button></div></div>
+        <div id="hadithNotice" class="notice hidden"></div><div id="hadithList" class="hadith-list"></div>
+      </section>
+
+      <section id="view-tasbih" class="view"><div class="page-toolbar"><div><div class="eyebrow">الذكر</div><h1 data-i18n="ui.tasbih_title">السبحة الإلكترونية</h1></div><div class="toolbar-actions"><select id="tasbihTarget"><option value="33">33</option><option value="99">99</option><option value="100">100</option><option value="1000">1000</option></select></div></div><div class="tasbih-wrap"><div class="tasbih-card"><div class="tasbih-label" data-i18n="ui.current_count">العدد الحالي</div><div id="tasbihCount" class="tasbih-count">0</div><div class="tasbih-target-label"><span data-i18n="ui.target">الهدف</span>: <span id="tasbihTargetLabel">33</span></div><button id="tasbihAdd" class="tasbih-button" data-i18n="ui.tasbih">تسبيح</button><div class="tasbih-actions"><button id="tasbihMinus" class="secondary-btn">−1</button><button id="tasbihReset" class="secondary-btn" data-i18n="ui.reset">إعادة ضبط</button></div><div class="muted">إجمالي التسبيحات المحفوظة: <span id="tasbihTotal">0</span></div></div><div class="tips-card"><h3>أذكار سريعة</h3><button class="dhikr-preset" data-dhikr="سبحان الله">سبحان الله</button><button class="dhikr-preset" data-dhikr="الحمد لله">الحمد لله</button><button class="dhikr-preset" data-dhikr="الله أكبر">الله أكبر</button><button class="dhikr-preset" data-dhikr="لا إله إلا الله">لا إله إلا الله</button><p id="selectedDhikr" class="selected-dhikr">اختر ذكرًا للعرض</p></div></div></section>
+
+      <section id="view-tools" class="view"><div class="page-toolbar"><div><div class="eyebrow" data-i18n="ui.tools_center">مركز الأدوات</div><h1 data-i18n="ui.app_tools">أدوات التطبيق</h1></div></div><div class="tools-grid" id="toolsGrid"></div></section>
+      <section id="view-favorites" class="view"><div class="page-toolbar"><div><div class="eyebrow">محفوظات</div><h1 data-i18n="ui.favorites_notes">المفضلة والملاحظات</h1></div></div><div id="favoritesList" class="favorites-list"></div></section>
+
+      <section id="view-settings" class="view"><div class="page-toolbar"><div><div class="eyebrow">التخصيص</div><h1 data-i18n="ui.settings">الإعدادات</h1></div></div><div class="settings-grid">
+        <div class="settings-card"><h3 data-i18n="ui.appearance">المظهر</h3><label data-i18n="ui.mode">الوضع</label><select id="themeSelect"><option value="system" data-i18n="ui.system">النظام</option><option value="light" data-i18n="ui.light">فاتح</option><option value="dark" data-i18n="ui.dark">داكن</option></select><label data-i18n="ui.language">اللغة</label><select id="uiLanguage"></select></div>
+        <div class="settings-card"><h3 data-i18n="ui.reading_settings">القراءة</h3><label data-i18n="ui.font_size">حجم الخط</label><input id="fontRange" type="range" min="20" max="46" step="1" /><label data-i18n="ui.spacing">التباعد</label><input id="lineRange" type="range" min="1.5" max="3" step="0.1" /><label data-i18n="ui.daily_target">الهدف اليومي بالآيات</label><input id="dailyTarget" type="number" min="1" max="1000" /></div>
+        <div class="settings-card"><h3 data-i18n="ui.quran_local_font">خط القرآن المحلي</h3><label for="fontSelect" data-i18n="ui.font">الخط</label><select id="fontSelect"><option value="myfont.ttf">myfont.ttf</option></select><div id="fontStatus" class="muted small-text"></div><button id="importFontBtn" class="secondary-btn wide" data-i18n="ui.import_font">استيراد خط من الجهاز</button><button id="openFontsFolder" class="secondary-btn wide" data-i18n="ui.open_fonts">فتح مجلد الخطوط</button><p class="muted small-text"><code></code>.</p></div>
+        <div class="settings-card"><h3 data-i18n="ui.recitation_settings">التلاوة</h3><label><input id="autoplayCheck" type="checkbox" /> <span data-i18n="ui.autoplay">تشغيل تلقائي</span></label><label><input id="autoNextCheck" type="checkbox" /> <span data-i18n="ui.auto_next">الانتقال للسورة التالية تلقائيًا</span></label><label data-i18n="ui.repeat">التكرار</label><select id="repeatCount"><option value="1">مرة واحدة</option><option value="2">مرتان</option><option value="3">3 مرات</option><option value="5">5 مرات</option><option value="-1">حتى الإيقاف</option></select><button id="checkAudioBtn" class="secondary-btn wide">فحص ملفات التلاوة</button><p id="audioCheckStatus" class="muted small-text"></p></div>
+        <div class="settings-card"><h3 data-i18n="ui.backup">النسخ الاحتياطي</h3><button id="exportBtn" class="secondary-btn wide" data-i18n="ui.export_data">تصدير بياناتي</button><button id="importBtn" class="secondary-btn wide" data-i18n="ui.import_data">استيراد بيانات</button><button id="openAudioFolder" class="secondary-btn wide" data-i18n="ui.open_audio">فتح مجلد الصوت</button><p id="backupStatus" class="muted small-text"></p></div>
+        <div class="settings-card"><h3></h3><button id="openConfigFolder" class="secondary-btn wide"></button><button id="openLocalesFolder" class="secondary-btn wide"></button><button id="openTranslationsFolder" class="secondary-btn wide"></button><p class="muted small-text"><code></code><code></code></p></div>
+      </div></section>
+    </main>
+  </div>
+
+  <div id="searchModal" class="modal hidden" aria-hidden="true"><div class="modal-card search-modal-card"><div class="modal-head"><div><strong data-i18n="ui.search_title">البحث في المحتوى المحلي</strong><div id="searchCount" class="muted small-text"></div></div><button id="searchCloseBtn" class="icon-btn" data-i18n="ui.close">×</button></div><div class="search-bar"><input id="searchInput" type="search" autocomplete="off" data-i18n-placeholder="ui.search" placeholder="بحث" /><select id="searchFilter"><option value="all" data-i18n="ui.search_all">الكل</option><option value="quran" data-i18n="ui.search_quran">القرآن</option><option value="hadith" data-i18n="ui.search_hadith">الأحاديث</option></select></div><div id="searchResults" class="search-results"></div></div></div>
+
+  <div id="noteModal" class="modal hidden" aria-hidden="true"><div class="modal-card note-modal-card"><div class="modal-head"><strong id="noteModalTitle">ملاحظة</strong><button id="noteCloseBtn" class="icon-btn">×</button></div><div id="noteVersePreview" class="note-verse-preview"></div><textarea id="noteInput" rows="7" placeholder="اكتب ملاحظتك هنا…"></textarea><div class="modal-actions"><button id="deleteNoteBtn" class="secondary-btn danger hidden">حذف الملاحظة</button><div class="modal-actions-end"><button id="cancelNoteBtn" class="secondary-btn">إلغاء</button><button id="saveNoteBtn" class="primary-btn">حفظ الملاحظة</button></div></div></div></div>
+  <div id="toast" class="toast"></div>
+  <script src="renderer/app.js"></script>
+</body>
+</html>

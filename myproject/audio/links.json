@@ -1,0 +1,11 @@
+{
+  "default": "عبدالباسط عبدالصمد",
+  "reciters": [
+    {
+      "id": "basit",
+      "name": "عبدالباسط عبدالصمد",
+      "template": "https://server7.mp3quran.net/basit/{chapter3}.mp3",
+      "fallbackTemplate": "https://server8.mp3quran.net/afs/{chapter3}.mp3"
+    }
+  ]
+}
