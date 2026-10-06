@@ -1,0 +1,103 @@
+yk@YK-PC:~/quran-test/quran-guessr-main1$ npm start
+
+> quran-guessr@1.0.0 start
+> next start
+
+▲ Next.js 16.2.4
+- Local:         http://localhost:3000
+- Network:       http://172.29.162.14:3000
+✓ Ready in 268ms
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/yk/quran-test/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles:
+   * /home/yk/quran-test/quran-guessr-main1/package-lock.json
+
+Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id
+    at ignore-listed frames
+
+
+
+
+
+
+
+
+
+
+yk@YK-PC:~/quran-test/quran-guessr-main1$ npm run build
+
+> quran-guessr@1.0.0 build
+> next build
+
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/yk/quran-test/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles:
+   * /home/yk/quran-test/quran-guessr-main1/package-lock.json
+
+Warning: Custom Cache-Control headers detected for the following routes:
+  - /_next/static/:path*
+
+Setting a custom Cache-Control header can break Next.js development behavior.
+▲ Next.js 16.2.4 (Turbopack)
+- Experiments (use with caution):
+  · optimizePackageImports
+
+  Creating an optimized production build ...
+(node:5668) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Turbopack build encountered 2 warnings:
+[next]/internal/font/google/inter_1bca434e.module.css
+Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/inter_1bca434e.module.css
+    [next]/internal/font/google/inter_1bca434e.js
+    ./quran-guessr-main1/app/layout.tsx
+
+
+[next]/internal/font/google/scheherazade_new_dafa23b3.module.css
+Error while requesting resource
+There was an issue establishing a connection while requesting https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/scheherazade_new_dafa23b3.module.css
+    [next]/internal/font/google/scheherazade_new_dafa23b3.js
+    ./quran-guessr-main1/app/layout.tsx
+
+
+
+> Build error occurred
+Error: Turbopack build failed with 2 errors:
+[next]/internal/font/google/inter_1bca434e.module.css
+next/font: error:
+Failed to fetch `Inter` from Google Fonts.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/inter_1bca434e.module.css
+    [next]/internal/font/google/inter_1bca434e.js
+    ./quran-guessr-main1/app/layout.tsx
+
+
+[next]/internal/font/google/scheherazade_new_dafa23b3.module.css
+next/font: error:
+Failed to fetch `Scheherazade New` from Google Fonts.
+
+Import trace:
+  Server Component:
+    [next]/internal/font/google/scheherazade_new_dafa23b3.module.css
+    [next]/internal/font/google/scheherazade_new_dafa23b3.js
+    ./quran-guessr-main1/app/layout.tsx
+
+
+    at ignore-listed frames
+
+
+
